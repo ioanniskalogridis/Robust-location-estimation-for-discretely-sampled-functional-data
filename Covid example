@@ -95,6 +95,9 @@ axis(1, at=c(15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345, 375, 405, 
 
 # Heat maps for the number cases per million
 
+Y = covid.c.r[, 2:424]
+Y[Y<0] <- 0 
+
 worldMap <- getMap()
 covid.c.r[4,1 ] <- "Bosnia and Herz."
 covid.c.r[8,1 ] <- "Czech Rep."
