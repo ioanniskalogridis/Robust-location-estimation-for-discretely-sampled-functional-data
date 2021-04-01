@@ -104,6 +104,6 @@ quan.smsp <- function(Y, tuning = 1e-03, maxit = 50, alpha = 0.5, r = 2, interva
   fit.f <- quan.irls(X = B, X.s = B.s, y=  Y, resids.in = resids.in, 
                       lambda = lambda1, Pen.matrix = Pen.matrix, alpha = alpha, tuning = tuning)
   mu = b.basis.e%*%fit.f$beta.hat
-  return(list(mu = mu, weights = fit.f$weights, Pen.matrix = Pen.matrix, fitted = fit.f$fitted,
+  return(list(mu = mu, weights = fit.f$weights, Pen.matrix = Pen.matrix,
               lambda = lambda1))
 }
