@@ -8,10 +8,10 @@ library(fda)
 library(SparseM)
 library(MASS)
 
-quan.smsp <- function(Y, tuning = 1e-03, maxit = 50, alpha = 0.5, r = 2, interval){
+quan.smsp <- function(Y, tun = 1e-03, max.it = 50, alpha = 0.5, r = 2, interval){
   # Y is the matrix containing the data values, each row corresponds to an observation.
   # Missing values, i.e., irregularly sampled data, are allowed.
-  # tuning is the constant detetermining the interval about zero in which
+  # tun is the constant detetermining the interval about zero in which
   # the quantile loss is smoothly approximated.
   # maxit refers to the maximum number of iterations allowed for the irls algorithm.
   # alpha is the alpha-quantile, by default the median.
@@ -67,18 +67,18 @@ quan.smsp <- function(Y, tuning = 1e-03, maxit = 50, alpha = 0.5, r = 2, interva
   
   par.in = 100*(h.m*n)^{-2*r/(2*r+1)}
   fit.in.c <- ginv(B.p+par.in*Pen.matrix)%*%(B.s%*%na.omit(as.vector(as.matrix(t(Y)))))
-  resids.in <- na.omit(as.vector(t(Y)))-t(B)%*%fit.in.c
+  resids.ls <- na.omit(as.vector(t(Y)))-t(B)%*%fit.in.c
   
-  quan.irls <- function(X, X.s, y, alpha = alpha, tuning = tuning, tol = 1e-08, lambda, 
-                         Pen.matrix, resids.in, maxit = maxit){
+  quan.irls <- function(X, X.s, y, tau, tuning, tol = 1e-08, pen, 
+                         P, resids.in, maxit){
     
     ic = 0
     istop = 0
     
     while(istop == 0 & ic <= maxit){
       ic = ic + 1
-      weights.prelim <- as.vector(weights.ch(resids.in, alpha = alpha, tuning = tuning))
-      M1 <-  t(t(X.s)*weights.prelim)%*%t(X) + 2*lambda*Pen.matrix
+      weights.prelim <- as.vector(weights.ch(resids.in,  tau, tuning))
+      M1 <-  t(t(X.s)*weights.prelim)%*%t(X) + 2*pen*P
       M2 <-  t(t(X.s)*weights.prelim)%*%na.omit(as.vector(as.matrix(t(y))))
       v1 = SparseM::solve(M1, M2)
       resids1 <- as.vector(na.omit(as.vector(t(y)))-t(X)%*%v1)
@@ -86,7 +86,7 @@ quan.smsp <- function(Y, tuning = 1e-03, maxit = 50, alpha = 0.5, r = 2, interva
       if(check < tol){istop =1}
       resids.in <- resids1
     }
-    weights1 = as.vector(weights.ch(resids1, tuning = tuning, alpha = alpha) )
+    weights1 = as.vector(weights.ch(resids1, tau, tuning) )
     hat.tr <- sum( diag(SparseM::solve(M1,  t(t(X.s)*weights1))%*%t(X)))/length(na.omit(as.vector(as.matrix(t(y)))))
     # hat.tr <- mean( diag(t(X)%*%SparseM::solve(M1,  t(t(X.s)*weights1))) ) 
     return(list(resids = resids1, beta.hat = v1, hat.tr = hat.tr, ic = ic,
@@ -94,12 +94,15 @@ quan.smsp <- function(Y, tuning = 1e-03, maxit = 50, alpha = 0.5, r = 2, interva
   }
   
   GCV <- function(lambda){
-    fit.r <- quan.irls(X = B, X.s = B.s, y = Y, resids.in = resids.in, 
-                        lambda = lambda, Pen.matrix = Pen.matrix, alpha = alpha, tuning = tuning)
+    fit.r <- quan.irls(X = B, X.s = B.s, y = Y, resids.in = resids.ls, maxit = max.it,
+                        pen = lambda, P = Pen.matrix, tau = alpha, tuning = tun)
     GCV.scores <- mean( fit.r$weights*1/ms*(fit.r$resids)^2/((1-fit.r$hat.tr)^2)  )
     return(GCV.scores)
   }
-
+  # s <- seq(1e-06, 1e-05, len = 200)
+  # g.s <- sapply(s, FUN = GCV)
+  # plot(s, g.s, type = "l")
+  
   lambda1 <- optimize(f = GCV, interval = interval)$minimum
   fit.f <- quan.irls(X = B, X.s = B.s, y=  Y, resids.in = resids.in, 
                       lambda = lambda1, Pen.matrix = Pen.matrix, alpha = alpha, tuning = tuning)
