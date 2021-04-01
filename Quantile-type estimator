@@ -105,7 +105,7 @@ quan.smsp <- function(Y, tun = 1e-03, max.it = 50, alpha = 0.5, r = 2, interval)
   
   lambda1 <- optimize(f = GCV, interval = interval)$minimum
   fit.f <- quan.irls(X = B, X.s = B.s, y=  Y, resids.in = resids.ls, 
-                      lambda = lambda1, P = Pen.matrix, tau = alpha, tuning = tun)
+                      pen = lambda1, P = Pen.matrix, tau = alpha, tuning = tun)
   mu = b.basis.e%*%fit.f$beta.hat
   return(list(mu = mu, weights = fit.f$weights, Pen.matrix = Pen.matrix,
               lambda = lambda1))
