@@ -1,3 +1,6 @@
+# These functions implement the local polynomial estimator of Degras (2008) 
+# and regression spline estimator of Lima et al. (2019)
+
 require(KernSmooth)
 require(fda)
 require(CVXR)
