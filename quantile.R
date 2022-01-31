@@ -74,7 +74,7 @@ quan.smsp <- function(Y, tun = 1e-03, alpha = 0.5, r = 2, interval, max.it = 50)
     hat.tr <- sum( diag(SparseM::solve(M1,  t(t(X.s)*weights1))%*%t(X)))/length(na.omit(as.vector(as.matrix(t(y)))))
     # hat.tr <- mean( diag(t(X)%*%SparseM::solve(M1,  t(t(X.s)*weights1))) ) 
     return(list(resids = resids1, beta.hat = v1, hat.tr = hat.tr, ic = ic,
-                weights = weights1 ) ) 
+                weights = weights1 ) )
   }
   
   GCV <- function(lambda){
