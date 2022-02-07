@@ -7,7 +7,7 @@ library(fda)
 library(SparseM)
 library(MASS)
 
-huber.smsp <- function(Y, k = 0.70, maxit = 100, toler = 1e-06, r = 2){
+huber.smsp <- function(Y, k = 0.70, maxit = 100, toler = 1e-06, r = 2, interval = NULL){
   # Y is the matrix containing the data values, each row corresponds to an observation.
   # Missing values, i.e., irregularly sampled data, are allowed.
   # k is the tuning parameter that regulates the behaviour of the Huber loss.
@@ -85,11 +85,17 @@ huber.smsp <- function(Y, k = 0.70, maxit = 100, toler = 1e-06, r = 2){
     GCV.scores <- mean( fit.r$weights*1/ms*(fit.r$resids)^2/((1-fit.r$hat.tr)^2)  )
     return(GCV.scores)
   }
-  lambda.cand <- c(1e-09, 1e-08, 6e-08, 1e-07, 6e-07, 1e-06, 6e-06, 1e-05, 6e-05, 1e-04, 6e-04, 1e-03, 6e-03,
-                   1e-02, 6e-02, 1e-01, 6e-01, 2)
-  lambda.e <- sapply(lambda.cand, FUN  = GCV)
-  wm <- which.min(lambda.e)
-  lambda1 <- optimize(f = GCV, lower = lambda.cand[wm-1], upper = lambda.cand[wm+1])$minimum
+  if(is.null(interval)){
+    lambda.cand <- c(1e-09, 1e-08, 6e-08, 1e-07, 6e-07, 1e-06, 6e-06, 1e-05, 6e-05, 1e-04, 6e-04, 1e-03, 6e-03,
+                     1e-02, 6e-02, 1e-01, 6e-01, 2)
+    lambda.e <- sapply(lambda.cand, FUN  = GCV)
+    wm <- which.min(lambda.e)
+    if(wm == 1){wm <- 2}
+    if(wm == length(lambda.cand)){wm <- (length(lambda.cand)-1)  }
+    lambda1 <- optimize(f = GCV, lower = lambda.cand[wm-1], upper = lambda.cand[wm+1])$minimum
+  } else {
+    lambda1 <- optimize(f = GCV, interval = interval)$minimum}
+  
   fit.f <- huber.irls(X = B, X.s = B.s, y=  Y, resids.in = resids.in, 
                          lambda = lambda1, Pen.matrix = Pen.matrix, k = k, maxit = maxit)
   mu = b.basis.e%*%fit.f$beta.hat

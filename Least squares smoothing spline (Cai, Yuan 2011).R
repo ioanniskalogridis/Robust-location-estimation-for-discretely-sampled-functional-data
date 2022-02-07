@@ -1,7 +1,7 @@
 require(fda)
 require(SparseM)
 
-ls.smsp <-  function(Y){
+ls.smsp <-  function(Y, interval = NULL){
   n <- dim(Y)[1]
   p <- dim(Y)[2]
   grid <- 1:p/p
@@ -24,11 +24,16 @@ ls.smsp <-  function(Y){
     GCV.scores <- mean( (resids.ls)^2  )/( (1-hat.values)^2 )
     return(GCV.scores)
   }
-  lambda.cand <- c(1e-09, 1e-08, 6e-08, 1e-07, 6e-07, 1e-06, 6e-06, 1e-05, 6e-05, 1e-04, 6e-04, 1e-03, 6e-03,
-                   1e-02, 6e-02, 1e-01, 6e-01, 2)
-  lambda.e <- sapply(lambda.cand, FUN  = GCV)
-  wm <- which.min(lambda.e)
-  lambda1 <- optimize(f = GCV, lower = lambda.cand[wm-1], upper = lambda.cand[wm+1])$minimum
+  if(is.null(interval)){
+    lambda.cand <- c(1e-09, 1e-08, 6e-08, 1e-07, 6e-07, 1e-06, 6e-06, 1e-05, 6e-05, 1e-04, 6e-04, 1e-03, 6e-03,
+                     1e-02, 6e-02, 1e-01, 6e-01, 2)
+    lambda.e <- sapply(lambda.cand, FUN  = GCV)
+    wm <- which.min(lambda.e)
+    if(wm == 1){wm <- 2}
+    if(wm == length(lambda.cand)){wm <- (length(lambda.cand)-1)  }
+    lambda1 <- optimize(f = GCV, lower = lambda.cand[wm-1], upper = lambda.cand[wm+1])$minimum
+  } else {
+    lambda1 <- optimize(f = GCV, interval = interval)$minimum}
   
   # s <- seq(7e-05, 7e-04, len = 500)
   # GCV.s <- sapply(s, FUN = GCV)

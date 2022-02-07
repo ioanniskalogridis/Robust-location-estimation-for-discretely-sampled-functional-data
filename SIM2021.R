@@ -91,9 +91,11 @@ matplot(mse.sin.m, lty = 1, lwd = 3, col = "gray", type = "l", cex.lab = 1.3, ce
 matplot(mse.ls.m, lty = 1, lwd = 3, col = "gray", type = "l", cex.lab = 1.3, cex.axis = 1.3) ; grid()
 matplot(mse.l1sp.m, lty = 1, lwd = 3, col = "gray", type = "l", cex.lab = 1.3, cex.axis = 1.3) ; grid()
 
-m <- 50
+#####################################################################################################################################
+
+m <- 20
 n <- 60
-sigma <- 1
+sigma <- 0.2
 nrep <- 1000
 
 t <- seq(1/m, (m-1)/m, len = m)
@@ -102,18 +104,19 @@ t <- seq(1/m, (m-1)/m, len = m)
 mu <- function(x) 3*exp(-(x-0.25)^2/0.1)
 mu.t <- sapply(t, FUN = mu)
 
-mse.hsmsp <- rep(NA, nrep)
-mse.sin <- rep(NA, nrep)
+mse.hsp <- rep(NA, nrep)
+mse.hf <- rep(NA, nrep)
 mse.cao <- rep(NA, nrep)
-mse.deg <- rep(NA, nrep)
+mse.lp <- rep(NA, nrep)
 mse.ls <- rep(NA, nrep)
+mse.l1sp <- rep(NA, nrep)
 
-mse.hsmsp.m <- matrix(NA, nrow = m, ncol = nrep)
-mse.sin.m <- matrix(NA, nrow = m, ncol = nrep)
+mse.hsp.m <- matrix(NA, nrow = m, ncol = nrep)
+mse.hf.m <- matrix(NA, nrow = m, ncol = nrep)
 mse.cao.m <- matrix(NA, nrow = m, ncol = nrep)
-mse.deg.m <- matrix(NA, nrow = m, ncol = nrep)
+mse.lp.m <- matrix(NA, nrow = m, ncol = nrep)
 mse.ls.m <- matrix(NA, nrow = m, ncol = nrep)
-
+mse.l1sp.m <- matrix(NA, nrow = m, ncol = nrep)
 
 for(k in 1:nrep){
   print(k)
@@ -121,7 +124,7 @@ for(k in 1:nrep){
   for(i in 1:n){
     X[i,] <- mu.t 
     for(j in 1:50){
-      X[i,] <- X[i, ] +  sqrt(2)*rt(1, df = 5)*sapply(t, FUN = function(x) sin((j-1/2)*p*x)/((j-1/2)*pi) )
+      X[i,] <- X[i, ] +  sqrt(2)*rt(1, df = 5)*sapply(t, FUN = function(x) sin((j-1/2)*pi*x)/((j-1/2)*pi) )
     }
   }
   Y <- X + matrix( sigma*rnorm(m*n), nrow = n, ncol = m )
@@ -130,36 +133,46 @@ for(k in 1:nrep){
   # Y <- X + matrix( sigma*rnormMix(m*n, mean1 = 0, sd1 = 1, mean2 = 0, sd2 = 9, p.mix = 0.15), nrow = n, ncol = m )
   # Y <- X + matrix( sigma*rnorm(m*n)/runif(m*n), nrow = n, ncol = m )
   
-  fit.h <- huber.smsp.cd(Y, interval = c(1.5e-03, 1.5e-02))
+  fit.h <- huber.smsp(Y)
   fit.sin <- M.est.nd(Y, k = 0.70)
+  # plot(t, mu.t, lwd = 3, type = "l")
+  # lines(t,fit.h$mu, lwd = 3, col = "blue")
+  # lines(t, fit.sin$gkm, lwd = 3, col = "red")
+  # 
+  # mean((fit.sin$gkm-mu.t)^2)*100
+  # mean((fit.h$mu-mu.t)^2)*100
+  # 
+  # fit.l1 <- quan.smsp(Y, alpha = 0.5)
   fit.cao <- Cao(Y=Y, k = 0.70)
   fit.deg <- Degr(Y = Y)
-  fit.ls <- ls.smsp(Y= Y, interval = c(5e-03, 5e-02))
+  fit.ls <- ls.smsp(Y= Y)
   
-  mse.hsmsp[k] <- mean((fit.h$mu-mu.t)^2)
-  mse.sin[k] <-  mean((fit.sin$gkm-mu.t)^2)
+  mse.hsp[k] <- mean((fit.h$mu-mu.t)^2)
+  mse.hf[k] <-  mean((fit.sin$gkm-mu.t)^2)
   mse.cao[k] <- mean((fit.cao$mu-mu.t)^2)
-  mse.deg[k] <- mean((fit.deg$mu-mu.t)^2)
+  mse.lp[k] <- mean((fit.deg$mu-mu.t)^2)
   mse.ls[k] <-  mean((fit.ls$mu-mu.t)^2)
+  # mse.l1sp[k] <- mean((fit.l1$mu-mu.t)^2)
   
-  mse.hsmsp.m[, k] <- fit.h$mu
-  mse.sin.m[, k] <- fit.sin$gkm
+  mse.hsp.m[, k] <- fit.h$mu
+  mse.hf.m[, k] <- fit.sin$gkm
   mse.cao.m[, k] <- fit.cao$mu
-  mse.deg.m[, k] <- fit.deg$mu
+  mse.lp.m[, k] <- fit.deg$mu
   mse.ls.m[, k] <- fit.ls$mu
+  # mse.l1sp.m[, k] <- fit.l1$mu
   
 }
-mean(mse.ls) ;  sd(mse.ls)/sqrt(nrep)
-mean(mse.hsmsp) ; sd(mse.hsmsp)/sqrt(nrep)
-mean(mse.deg) ; sd(mse.deg)/sqrt(nrep)
-mean(mse.sin) ; sd(mse.sin)/sqrt(nrep)
-mean(mse.cao) ; sd(mse.cao)/sqrt(nrep)
+mean(mse.ls, na.rm = TRUE)*100 ;  sd(mse.ls)*10/sqrt(nrep)
+mean(mse.hsp, na.rm = TRUE)*100 ; sd(mse.hsp)*10/sqrt(nrep)
+mean(mse.lp, na.rm = TRUE)*100 ; sd(mse.lp)*10/sqrt(nrep)
+mean(mse.hf, na.rm = TRUE)*100 ; sd(mse.hf)*10/sqrt(nrep)
+mean(mse.cao, na.rm = TRUE)*100 ; sd(mse.cao)*10/sqrt(nrep)
+mean(mse.l1sp, na.rm = TRUE)*100 ; sd(mse.l1sp)*10/sqrt(nrep)
 
-matplot(mse.hsmsp.m, lty = 1, lwd = 3, col = "gray", type = "l", cex.lab = 1.3, cex.axis = 1.3) ; grid()
-matplot(mse.sin.m, lty = 1, lwd = 3, col = "gray", type = "l", cex.lab = 1.3, cex.axis = 1.3) ; grid()
+matplot(mse.hsp.m, lty = 1, lwd = 3, col = "gray", type = "l", cex.lab = 1.3, cex.axis = 1.3) ; grid()
+matplot(mse.hf.m, lty = 1, lwd = 3, col = "gray", type = "l", cex.lab = 1.3, cex.axis = 1.3) ; grid()
 matplot(mse.ls.m, lty = 1, lwd = 3, col = "gray", type = "l", cex.lab = 1.3, cex.axis = 1.3) ; grid()
-matplot(mse.cao.m, lty = 1, lwd = 3, col = "gray", type = "l", cex.lab = 1.3, cex.axis = 1.3) ; grid()
-
+matplot(mse.l1sp.m, lty = 1, lwd = 3, col = "gray", type = "l", cex.lab = 1.3, cex.axis = 1.3) ; grid()
 
 ############################################## Peak and partial contamination ###################################################
 

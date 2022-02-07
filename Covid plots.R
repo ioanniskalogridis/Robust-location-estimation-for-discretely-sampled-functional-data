@@ -116,17 +116,17 @@ p
 
 
 
-# fit.q1d <- quan.smsp(Y, alpha = 0.1, interval = c(1e-01, 1.1))
-# fit.q2d  <- quan.smsp(Y, alpha = 0.3, interval = c(2e-06, 2e-05))
-# fit.q3d  <- quan.smsp(Y, alpha = 0.5,  interval = c(6e-07, 6e-06))
-# fit.q4d  <- quan.smsp(Y, alpha = 0.7, interval = c(1e-07, 1e-06))
-# fit.q5d  <- quan.smsp(Y, alpha = 0.9, interval  = c(6e-07, 6e-08))
+fit.q1d <- quan.smsp(Y, alpha = 0.1, interval = c(1e-01, 1.1))
+fit.q2d  <- quan.smsp(Y, alpha = 0.3, interval = c(2e-06, 2e-05))
+fit.q3d  <- quan.smsp(Y, alpha = 0.5,  interval = c(6e-07, 6e-06))
+fit.q4d  <- quan.smsp(Y, alpha = 0.7, interval = c(1e-07, 1e-06))
+fit.q5d  <- quan.smsp(Y, alpha = 0.9, interval  = c(6e-07, 6e-08))
 
-fit.q1d <- quan.smsp(Y, alpha = 0.1)
-fit.q2d  <- quan.smsp(Y, alpha = 0.3)
-fit.q3d  <- quan.smsp(Y, alpha = 0.5)
-fit.q4d  <- quan.smsp(Y, alpha = 0.7)
-fit.q5d  <- quan.smsp(Y, alpha = 0.9)
+# fit.q1d <- quan.smsp(Y, alpha = 0.1)
+# fit.q2d  <- quan.smsp(Y, alpha = 0.3)
+# fit.q3d  <- quan.smsp(Y, alpha = 0.5)
+# fit.q4d  <- quan.smsp(Y, alpha = 0.7)
+# fit.q5d  <- quan.smsp(Y, alpha = 0.9)
 
 par(mar = c(3.5, 5.7, 3.1, 1.1))
 par(mgp = c(3.8, 1, 0))
