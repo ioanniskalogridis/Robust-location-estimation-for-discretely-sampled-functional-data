@@ -2,7 +2,7 @@ library(fda)
 library(SparseM)
 library(MASS)
 
-quan.smsp <- function(Y, tun = 1e-03, alpha = 0.5, r = 2, interval, toler = 1e-06, max.it = 100){
+quan.smsp <- function(Y, tun = 1e-03, alpha = 0.5, r = 2, interval, toler = 1e-06, max.it = 100, interval = NULL){
   
   rho.ch <- function(x, alpha = 0.5, tuning = 1e-03) {
     f <- ifelse(x <= tuning & x >=0, alpha*x^2/tuning, 
@@ -54,7 +54,7 @@ quan.smsp <- function(Y, tun = 1e-03, alpha = 0.5, r = 2, interval, toler = 1e-0
   resids.ls <- na.omit(as.vector(t(Y)))-t(B)%*%fit.in.c
   
   quan.irls <- function(X, X.s, y, tau, tuning, tol = toler, pen, 
-                         P, resids.in, maxit){
+                        P, resids.in, maxit){
     
     ic = 0
     istop = 0
@@ -78,25 +78,24 @@ quan.smsp <- function(Y, tun = 1e-03, alpha = 0.5, r = 2, interval, toler = 1e-0
   }
   GCV <- function(lambda){
     fit.r <- quan.irls(X = B, X.s = B.s, y = Y, resids.in = resids.ls, maxit = max.it,
-                        pen = lambda, P = Pen.matrix, tau = alpha, tuning = tun)
+                       pen = lambda, P = Pen.matrix, tau = alpha, tuning = tun)
     GCV.scores <- mean( fit.r$weights*1/ms*(fit.r$resids)^2/((1-fit.r$hat.tr)^2)  )
     return(GCV.scores)
   }
-  lambda.cand <- c(1e-09, 1e-08, 6e-08, 1e-07, 6e-07, 1e-06, 6e-06, 1e-05, 6e-05, 1e-04, 6e-04, 1e-03, 6e-03,
-                   1e-02, 6e-02, 1e-01, 6e-01, 2)
-  lambda.e <- sapply(lambda.cand, FUN  = GCV)
-  wm <- which.min(lambda.e)
-  if(wm == 1){wm <- 2}
-  if(wm == length(lambda.cand)){wm <- (length(lambda.cand)-1)  }
-  lambda1 <- optimize(f = GCV, lower = lambda.cand[wm-1], upper = lambda.cand[wm+1])$minimum
+  if(is.null(interval)){
+    lambda.cand <- c(1e-09, 1e-08, 6e-08, 1e-07, 6e-07, 1e-06, 6e-06, 1e-05, 6e-05, 1e-04, 6e-04, 1e-03, 6e-03,
+                     1e-02, 6e-02, 1e-01, 6e-01, 2)
+    lambda.e <- sapply(lambda.cand, FUN  = GCV)
+    wm <- which.min(lambda.e)
+    if(wm == 1){wm <- 2}
+    if(wm == length(lambda.cand)){wm <- (length(lambda.cand)-1)  }
+    lambda1 <- optimize(f = GCV, lower = lambda.cand[wm-1], upper = lambda.cand[wm+1])$minimum
+  } else {
+    lambda1 <- optimize(f = GCV, interval = interval)$minimum}
   
-  # s <- seq(1e-06, 1e-05, len = 200)
-  # g.s <- sapply(s, FUN = GCV)
-  # plot(s, g.s, type = "l")
   
-  # lambda1 <- optimize(f = GCV, interval = interval)$minimum
   fit.f <- quan.irls(X = B, X.s = B.s, y=  Y, resids.in = resids.ls, maxit = max.it,
-                      pen = lambda1, P = Pen.matrix, tau = alpha, tuning = tun)
+                     pen = lambda1, P = Pen.matrix, tau = alpha, tuning = tun)
   mu = b.basis.e%*%fit.f$beta.hat
   return(list(mu = mu, weights = fit.f$weights, Pen.matrix = Pen.matrix,
               lambda = lambda1))
