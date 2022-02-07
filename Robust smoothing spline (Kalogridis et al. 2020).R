@@ -86,6 +86,8 @@ quan.smsp <- function(Y, tun = 1e-03, alpha = 0.5, r = 2, interval, toler = 1e-0
                    1e-02, 6e-02, 1e-01, 6e-01, 2)
   lambda.e <- sapply(lambda.cand, FUN  = GCV)
   wm <- which.min(lambda.e)
+  if(wm == 1){wm <- 2}
+  if(wm == length(lambda.cand)){wm <- (length(lambda.cand)-1)  }
   lambda1 <- optimize(f = GCV, lower = lambda.cand[wm-1], upper = lambda.cand[wm+1])$minimum
   
   # s <- seq(1e-06, 1e-05, len = 200)

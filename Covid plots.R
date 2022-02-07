@@ -22,11 +22,17 @@ covid.c.r <- spread(covid.c.r, Date, new)
 Y = covid.c.r[, 2:424]
 Y[Y<0] <- 0 
 
-fit.q1c <- quan.smsp(Y, alpha = 0.1, interval = c(1e-07, 9e-07))
-fit.q2c <- quan.smsp(Y, alpha = 0.3, interval = c(2e-08, 2e-07))
-fit.q3c <- quan.smsp(Y, alpha = 0.5, interval = c(5e-09, 5e-08))
-fit.q4c <- quan.smsp(Y, alpha = 0.7,  interval = c(8e-10, 5e-09))
-fit.q5c <- quan.smsp(Y, alpha = 0.9,  interval  = c(6e-10, 6e-09))
+# fit.q1c <- quan.smsp(Y, alpha = 0.1, interval = c(1e-07, 9e-07))
+# fit.q2c <- quan.smsp(Y, alpha = 0.3, interval = c(2e-08, 2e-07))
+# fit.q3c <- quan.smsp(Y, alpha = 0.5, interval = c(5e-09, 5e-08))
+# fit.q4c <- quan.smsp(Y, alpha = 0.7,  interval = c(8e-10, 5e-09))
+# fit.q5c <- quan.smsp(Y, alpha = 0.9,  interval  = c(6e-10, 6e-09))
+
+fit.q1c <- quan.smsp(Y, alpha = 0.1)
+fit.q2c <- quan.smsp(Y, alpha = 0.3)
+fit.q3c <- quan.smsp(Y, alpha = 0.5)
+fit.q4c <- quan.smsp(Y, alpha = 0.7)
+fit.q5c <- quan.smsp(Y, alpha = 0.9)
 
 par(mar = c(3.5, 5.7, 3.1, 1.1))
 par(mgp = c(3.8, 1, 0))
@@ -63,7 +69,7 @@ axis(1, at=c(15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345, 375, 405, 
 data <- data.frame(t = 1:ncol(Y), fit1 = fit.q1c$mu, fit2 = fit.q2c$mu, fit3 = fit.q3c$mu, 
                    fit4 = fit.q4c$mu, fit5 = fit.q5c$mu)  
 library(ggplot2)
-p <- ggplot(data = data, aes(x = t, y = fit1)) + geom_line(size = 1.4, linetype = "dashed",  col = rgb(0, 1, 0)) +  ylim(0, 790) + labs(x = "", 
+p <- ggplot(data = data, aes(x = t, y = fit1)) + geom_line(size = 1.4, linetype = "dashed",  col = rgb(0, 1, 0)) +  ylim(0, 800) + labs(x = "", 
                                                                                                                  y = "New cases (per million)")
 p <- p + scale_x_continuous(breaks = c(60, 150, 240, 330, 420),
                             labels= c("Mar", "June", "Sep", "Dec", "Mar"))
@@ -110,11 +116,17 @@ p
 
 
 
-fit.q1d <- quan.smsp(Y, alpha = 0.1, interval = c(1e-01, 1.1))
-fit.q2d  <- quan.smsp(Y, alpha = 0.3, interval = c(2e-06, 2e-05))
-fit.q3d  <- quan.smsp(Y, alpha = 0.5,  interval = c(6e-07, 6e-06))
-fit.q4d  <- quan.smsp(Y, alpha = 0.7, interval = c(1e-07, 1e-06))
-fit.q5d  <- quan.smsp(Y, alpha = 0.9, interval  = c(6e-07, 6e-08))
+# fit.q1d <- quan.smsp(Y, alpha = 0.1, interval = c(1e-01, 1.1))
+# fit.q2d  <- quan.smsp(Y, alpha = 0.3, interval = c(2e-06, 2e-05))
+# fit.q3d  <- quan.smsp(Y, alpha = 0.5,  interval = c(6e-07, 6e-06))
+# fit.q4d  <- quan.smsp(Y, alpha = 0.7, interval = c(1e-07, 1e-06))
+# fit.q5d  <- quan.smsp(Y, alpha = 0.9, interval  = c(6e-07, 6e-08))
+
+fit.q1d <- quan.smsp(Y, alpha = 0.1)
+fit.q2d  <- quan.smsp(Y, alpha = 0.3)
+fit.q3d  <- quan.smsp(Y, alpha = 0.5)
+fit.q4d  <- quan.smsp(Y, alpha = 0.7)
+fit.q5d  <- quan.smsp(Y, alpha = 0.9)
 
 par(mar = c(3.5, 5.7, 3.1, 1.1))
 par(mgp = c(3.8, 1, 0))
@@ -136,7 +148,7 @@ axis(1, at=c(15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345, 375, 405, 
 data <- data.frame(t = 1:ncol(Y), fit1 = fit.q1d$mu, fit2 = fit.q2d$mu, fit3 = fit.q3d$mu, 
                    fit4 = fit.q4d$mu, fit5 = fit.q5d$mu)  
 library(ggplot2)
-p <- ggplot(data = data, aes(x = t, y = fit1)) + geom_line(size = 1.4, linetype = "dashed",  col = rgb(0, 1, 0)) +  ylim(0, 17) + labs(x = "", 
+p <- ggplot(data = data, aes(x = t, y = fit1)) + geom_line(size = 1.4, linetype = "dashed",  col = rgb(0, 1, 0)) +  ylim(0, 17.5) + labs(x = "", 
                                                                                                                                         y = "New cases (per million)")
 p <- p + scale_x_continuous(breaks = c(60, 150, 240, 330, 420),
                             labels= c("Mar", "June", "Sep", "Dec", "Mar"))
@@ -144,7 +156,7 @@ p <- p + geom_line(aes(x = t, y = fit2), size = 1.4, linetype = "dotted", col = 
 p <- p + geom_line(aes(x = t, y = fit3), size = 1.4, linetype = "solid", col =  rgb(0.4980392, 0.4980392, 0.4980392))
 p <- p +  geom_line(aes(x = t, y = fit4), size = 1.4, linetype = "dotdash", col =   rgb(0.7490196, 0.2470588, 0.7490196))
 p <- p +  geom_line(aes(x = t, y = fit5), size = 1.4, linetype = "longdash", col =   rgb(1, 0, 1))
-p <- p + theme_bw(base_size = 40)
+p <- p + theme_bw(base_size = 40) 
 p
 
 
