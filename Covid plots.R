@@ -22,17 +22,17 @@ covid.c.r <- spread(covid.c.r, Date, new)
 Y = covid.c.r[, 2:424]
 Y[Y<0] <- 0 
 
-# fit.q1c <- quan.smsp(Y, alpha = 0.1, interval = c(1e-07, 9e-07))
-# fit.q2c <- quan.smsp(Y, alpha = 0.3, interval = c(2e-08, 2e-07))
-# fit.q3c <- quan.smsp(Y, alpha = 0.5, interval = c(5e-09, 5e-08))
-# fit.q4c <- quan.smsp(Y, alpha = 0.7,  interval = c(8e-10, 5e-09))
-# fit.q5c <- quan.smsp(Y, alpha = 0.9,  interval  = c(6e-10, 6e-09))
+fit.q1c <- quan.smsp(Y, alpha = 0.1, interval = c(1e-07, 9e-07))
+fit.q2c <- quan.smsp(Y, alpha = 0.3, interval = c(2e-08, 2e-07))
+fit.q3c <- quan.smsp(Y, alpha = 0.5, interval = c(5e-09, 5e-08))
+fit.q4c <- quan.smsp(Y, alpha = 0.7,  interval = c(8e-10, 5e-09))
+fit.q5c <- quan.smsp(Y, alpha = 0.9,  interval  = c(6e-10, 6e-09))
 
-fit.q1c <- quan.smsp(Y, alpha = 0.1)
-fit.q2c <- quan.smsp(Y, alpha = 0.3)
-fit.q3c <- quan.smsp(Y, alpha = 0.5)
-fit.q4c <- quan.smsp(Y, alpha = 0.7)
-fit.q5c <- quan.smsp(Y, alpha = 0.9)
+# fit.q1c <- quan.smsp(Y, alpha = 0.1)
+# fit.q2c <- quan.smsp(Y, alpha = 0.3)
+# fit.q3c <- quan.smsp(Y, alpha = 0.5)
+# fit.q4c <- quan.smsp(Y, alpha = 0.7)
+# fit.q5c <- quan.smsp(Y, alpha = 0.9)
 
 par(mar = c(3.5, 5.7, 3.1, 1.1))
 par(mgp = c(3.8, 1, 0))
@@ -51,8 +51,6 @@ p <- p + scale_x_continuous(breaks = c(60, 150, 240, 330, 420),
                             labels= c("Mar", "June", "Sep", "Dec", "Mar"))
 p <- p + theme_bw(base_size = 40)
 p
-
-
 
 
 plot(fit.q1c$mu, type = "l", lwd = 3, col = rgb(0, 1, 0), ylim = c(0, 770), xlab = "",
@@ -158,8 +156,6 @@ p <- p +  geom_line(aes(x = t, y = fit4), size = 1.4, linetype = "dotdash", col 
 p <- p +  geom_line(aes(x = t, y = fit5), size = 1.4, linetype = "longdash", col =   rgb(1, 0, 1))
 p <- p + theme_bw(base_size = 40) 
 p
-
-
 
 # Heat maps for the number cases per million
 
@@ -364,8 +360,6 @@ P4 <- P4 + theme(#panel.grid.minor = element_line(colour = NA), panel.grid.minor
   rect = element_blank(),
   plot.margin = unit( c(-2, -1, -2, -1), "cm" ) )
 P4
-
-
 
 europeanUnionTable <- data.frame(country = europeanUnion, value = value)
 europeCoords$value <- europeanUnionTable$value[match(europeCoords$region,europeanUnionTable$country)]
