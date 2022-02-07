@@ -2,7 +2,7 @@ library(fda)
 library(SparseM)
 library(MASS)
 
-quan.smsp <- function(Y, tun = 1e-03, alpha = 0.5, r = 2, interval, toler = 1e-06, max.it = 100, interval = NULL){
+quan.smsp <- function(Y, tun = 1e-03, alpha = 0.5, r = 2, toler = 1e-06, max.it = 100, interval = NULL){
   
   rho.ch <- function(x, alpha = 0.5, tuning = 1e-03) {
     f <- ifelse(x <= tuning & x >=0, alpha*x^2/tuning, 
