@@ -282,9 +282,9 @@ n <- 60
 sigma <- 0.5
 
 t <- seq(1/m, (m-1)/m, len = m)
-mu <- function(x) sin(6*pi*x)*(x+1)
+# mu <- function(x) sin(6*pi*x)*(x+1)
 # mu.t <- sapply(t, FUN = mu)
-# mu <- function(x) 3*exp(-(x-0.25)^2/0.3)
+mu <- function(x) 3*exp(-(x-0.25)^2/0.1)
 mu.t <- sapply(t, FUN = mu)
 
 mse.hsp <- rep(NA, nrep)
@@ -311,12 +311,12 @@ for(k in 1:nrep){
     }
     T.r <- runif(1, 1, m-2*m/30)
     sigma.r <- sample(c(-1, 1), size = 1, replace=  TRUE, prob = c(1/2, 1/2))
-    epsilon.r <- rbinom(1, 1, prob = 0.05)
+    epsilon.r <- rbinom(1, 1, prob = 0.1)
     
     X[i, seq_along(1:m)>=T.r & seq_along(1:m) <= T.r + m*2/30] <- X[i,  seq_along(1:m)>=T.r & seq_along(1:m) <= T.r + m*2/30] + epsilon.r*sigma.r*5
   }
-  Y <- X + matrix( sigma*rnorm(m*n), nrow = n, ncol = m )
-  # Y <- X + matrix( sigma*rt(m*n, df = 5), nrow = n, ncol = m )
+  # Y <- X + matrix( sigma*rnorm(m*n), nrow = n, ncol = m )
+  Y <- X + matrix( sigma*rt(m*n, df = 3), nrow = n, ncol = m )
   matplot(t(Y), lwd = 3, lty = 1, col = "gray", type = "l")
   # Y <- X + matrix( sigma*rt(m*n, df = 3), nrow = n, ncol = m )
   # Y <- X + matrix( sigma*rst(m*n, nu = 3, alpha = 0.5), nrow = n, ncol = m )
@@ -345,7 +345,7 @@ for(k in 1:nrep){
   # mean((fit.sin$gkm-mu.t)^2)*100
   # mean((fit.h$mu-mu.t)^2)*100
   # 
-  fit.l1 <- quan.smsp(Y, alpha = 0.5)
+  # fit.l1 <- quan.smsp(Y, alpha = 0.5)
   fit.cao <- Cao(Y=Y, k = 0.70)
   fit.deg <- Degr(Y = Y)
   fit.ls <- ls.smsp(Y= Y)
@@ -355,14 +355,14 @@ for(k in 1:nrep){
   mse.cao[k] <- mean((fit.cao$mu-mu.t)^2)
   mse.lp[k] <- mean((fit.deg$mu-mu.t)^2)
   mse.ls[k] <-  mean((fit.ls$mu-mu.t)^2)
-  mse.l1sp[k] <- mean((fit.l1$mu-mu.t)^2)
+  # mse.l1sp[k] <- mean((fit.l1$mu-mu.t)^2)
   
   mse.hsp.m[, k] <- fit.h$mu
   mse.hf.m[, k] <- fit.sin$gkm
   mse.cao.m[, k] <- fit.cao$mu
   mse.lp.m[, k] <- fit.deg$mu
   mse.ls.m[, k] <- fit.ls$mu
-  mse.l1sp.m[, k] <- fit.l1$mu
+  # mse.l1sp.m[, k] <- fit.l1$mu
   
 }
 mean(mse.ls, na.rm = TRUE)*100 ;  sd(mse.ls)*10/sqrt(nrep)
