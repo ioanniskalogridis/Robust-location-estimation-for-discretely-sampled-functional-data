@@ -147,7 +147,7 @@ axis(1, at=c(15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345, 375, 405, 
 data <- data.frame(t = 1:ncol(Y), fit1 = fit.q1d$mu, fit2 = fit.q2d$mu, fit3 = fit.q3d$mu, 
                    fit4 = fit.q4d$mu, fit5 = fit.q5d$mu)  
 library(ggplot2)
-p <- ggplot(data = data, aes(x = t, y = fit1)) + geom_line(size = 1.4, linetype = "dashed",  col = rgb(0, 1, 0)) +  ylim(0, 17.5) + labs(x = "", 
+p <- ggplot(data = data, aes(x = t, y = fit1)) + geom_line(size = 1.4, linetype = "dashed",  col = rgb(0, 1, 0)) +  ylim(0, 17) + labs(x = "", 
                                                                                                                                         y = "New cases (per million)")
 p <- p + scale_x_continuous(breaks = c(60, 150, 240, 330, 420),
                             labels= c("Mar", "June", "Sep", "Dec", "Mar"))
