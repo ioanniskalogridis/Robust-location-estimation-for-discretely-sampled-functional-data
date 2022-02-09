@@ -2,6 +2,7 @@ require(ggplot2)
 require(grid)
 require(rworldmap)
 require(tidyr)
+require(reshape2)
 
 covid <- read.csv(file = file.choose(), header = TRUE, sep = ",")
 covid.c <- covid[, c(3, 4, 12)]
