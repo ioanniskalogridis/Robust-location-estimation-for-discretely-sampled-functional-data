@@ -7,7 +7,7 @@ library(fda)
 library(SparseM)
 library(MASS)
 
-huber.smsp <- function(Y, k = 0.70, maxit = 100, toler = 1e-06, r = 2, interval = NULL){
+huber.smsp <- function(Y, k = 0.70, maxit = 1000, toler = 1e-12, r = 2, interval = NULL){
   # Y is the matrix containing the data values, each row corresponds to an observation.
   # Missing values, i.e., irregularly sampled data, are allowed.
   # k is the tuning parameter that regulates the behaviour of the Huber loss.
@@ -99,6 +99,9 @@ huber.smsp <- function(Y, k = 0.70, maxit = 100, toler = 1e-06, r = 2, interval 
   fit.f <- huber.irls(X = B, X.s = B.s, y=  Y, resids.in = resids.in, 
                          lambda = lambda1, Pen.matrix = Pen.matrix, k = k, maxit = maxit)
   mu = b.basis.e%*%fit.f$beta.hat
+  
+  # plot(t, mu.t, type = "l", col = "black", lwd = 3)
+  # lines(t, mu, col = "blue", lwd = 3)
   
   return(list(mu = mu, weights = fit.f$weights, Pen.matrix = Pen.matrix,
               lambda = lambda1))
