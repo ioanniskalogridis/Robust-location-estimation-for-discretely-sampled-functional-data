@@ -35,12 +35,6 @@ ls.smsp <-  function(Y, interval = NULL){
   } else {
     lambda1 <- optimize(f = GCV, interval = interval)$minimum}
   
-  # s <- seq(7e-05, 7e-04, len = 500)
-  # GCV.s <- sapply(s, FUN = GCV)
-  # plot(s, GCV.s, type ="l")
-  # 
-  # par.in = 1/n + 1/(p^2)
-  # lambda1 = optimize(f = GCV, interval = interval)$minimum
   fit.lsf <- SparseM::solve( t(X.v)%*%X.v + lambda1 * Pen.matrix, t(X.v)%*%Y.v )
   
   mu <- as.vector(Pred.big%*%fit.lsf)

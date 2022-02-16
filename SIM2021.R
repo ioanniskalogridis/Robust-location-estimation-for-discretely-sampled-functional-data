@@ -95,7 +95,7 @@ matplot(mse.l1sp.m, lty = 1, lwd = 3, col = "gray", type = "l", cex.lab = 1.3, c
 
 m <- 20
 n <- 60
-sigma <- 0.2
+sigma <- 0.5
 nrep <- 1000
 
 t <- seq(1/m, (m-1)/m, len = m)
@@ -127,11 +127,11 @@ for(k in 1:nrep){
       X[i,] <- X[i, ] +  sqrt(2)*rt(1, df = 5)*sapply(t, FUN = function(x) sin((j-1/2)*pi*x)/((j-1/2)*pi) )
     }
   }
-  Y <- X + matrix( sigma*rnorm(m*n), nrow = n, ncol = m )
+  # Y <- X + matrix( sigma*rnorm(m*n), nrow = n, ncol = m )
   # Y <- X + matrix( sigma*rt(m*n, df = 3), nrow = n, ncol = m )
   # Y <- X + matrix( sigma*rst(m*n, nu = 3, alpha = 0.5), nrow = n, ncol = m )
   # Y <- X + matrix( sigma*rnormMix(m*n, mean1 = 0, sd1 = 1, mean2 = 0, sd2 = 9, p.mix = 0.15), nrow = n, ncol = m )
-  # Y <- X + matrix( sigma*rnorm(m*n)/runif(m*n), nrow = n, ncol = m )
+  Y <- X + matrix( sigma*rnorm(m*n)/runif(m*n), nrow = n, ncol = m )
   
   fit.h <- huber.smsp(Y)
   fit.sin <- M.est.nd(Y, k = 0.70)
