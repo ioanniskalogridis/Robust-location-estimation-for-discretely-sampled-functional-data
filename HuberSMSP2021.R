@@ -15,7 +15,7 @@ huber.smsp <- function(Y, k = 0.70, maxit = 1000, toler = 1e-12, r = 2, interval
   # r is the order of the penalty; the order of the spline is 2*r.
   # interval is the interval in which the algorithm will look for the optimal value of lambda,
   # i.e., the value of lambda that minimizes the weighted GCV.
-  # This should be adjusted from problem to problem depending on where the minimum is located in each instance.
+  # if interval = NULL, a rough grid search is performed followed by optimization in the most promising interval.
 
   rho.huber <- function(x, k = 1.345) ifelse(abs(x)<= k, x^2/2, k*abs(x)-k^2/2)
   psi.huber <- function(x, k = 1.345) ifelse(abs(x)<= k, x, k*sign(x))
