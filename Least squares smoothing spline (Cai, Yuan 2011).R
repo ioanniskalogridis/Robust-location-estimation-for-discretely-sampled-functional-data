@@ -25,8 +25,9 @@ ls.smsp <-  function(Y, interval = NULL){
     return(GCV.scores)
   }
   if(is.null(interval)){
-    lambda.cand <- c(1e-09, 1e-08, 6e-08, 1e-07, 6e-07, 1e-06, 6e-06, 1e-05, 6e-05, 1e-04, 6e-04, 1e-03, 6e-03,
-                     1e-02, 6e-02, 1e-01, 6e-01, 2)
+    lambda.cand <- c(1e-09, 1e-08, 3e-08, 6e-08, 9e-08, 1e-07, 3e-07, 6e-07, 9e-07, 1e-06, 3e-06, 6e-06, 9e-06, 
+                     1e-05, 3e-05, 6e-05, 9e-05, 1e-04, 3e-04, 6e-04, 9e-04,  1e-03, 4e-03, 7e-03,
+                     1e-02, 4e-02, 7e-02, 1e-01, 6e-01, 2)
     lambda.e <- sapply(lambda.cand, FUN  = GCV)
     wm <- which.min(lambda.e)
     if(wm == 1){wm <- 2}
